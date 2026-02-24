@@ -61,8 +61,8 @@ const HeroSection = ({ onDemoTabSelect }: HeroSectionProps) => {
           AI-Powered Verification Platform
         </div>
         <h1 className="reveal opacity-0 font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-tight max-w-4xl mx-auto" style={{ animationDelay: "0.1s" }}>
-          Detect Fake News.{" "}
-          <span className="gradient-blue-text">Stop Deepfakes.</span>
+          AI-Powered Content Authenticity{" "}
+          <span className="gradient-blue-text">& Deepfake Risk Analysis.</span>
         </h1>
         <p className="reveal opacity-0 mt-6 text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed" style={{ animationDelay: "0.2s" }}>
           Harness the power of advanced neural networks to verify content authenticity
