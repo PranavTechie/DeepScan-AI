@@ -139,18 +139,22 @@ const response = await fetch("/api/analyze", {
 const data = await response.json();
 
 if (!response.ok) {
-  throw new Error(data.error || "Analysis failed");
+  toast({
+    title: "Analysis Failed",
+    description: data.error || "Something went wrong.",
+    variant: "destructive",
+  });
+  return;
 }
 
 setResult(data);
 
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
     toast({
-      title: "Analysis Failed",
-      description: "Something went wrong.",
-      variant: "destructive",
-    });
+    title: "Analysis Failed",
+    description: err.message || "Unexpected error occurred.",
+    variant: "destructive",
+  });
   } finally {
     setLoading(false);
   }
