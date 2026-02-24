@@ -6,7 +6,6 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Upload, Loader2, CheckCircle2, AlertTriangle, XCircle, FileText, Image, Video, Mic, Clock } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-
 export type DemoTab = "text" | "image" | "video" | "audio";
 
 type Result = {
@@ -41,6 +40,7 @@ const LiveDemoSection = ({ activeTab, onTabChange }: LiveDemoSectionProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
+  const [cooldown, setCooldown] = useState(0);
   const [dragOver, setDragOver] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
@@ -80,6 +80,7 @@ const LiveDemoSection = ({ activeTab, onTabChange }: LiveDemoSectionProps) => {
   }, []);
 
 const analyze = async () => {
+  if (cooldown > 0) return;
   if (!text.trim() && !file) return;
 
   setLoading(true);
@@ -149,6 +150,18 @@ if (!response.ok) {
 
 setResult(data);
 
+setCooldown(15);
+
+const interval = setInterval(() => {
+  setCooldown((prev) => {
+    if (prev <= 1) {
+      clearInterval(interval);
+      return 0;
+    }
+    return prev - 1;
+  });
+}, 1000);
+
   } catch (err: any) {
     toast({
     title: "Analysis Failed",
@@ -210,7 +223,7 @@ setResult(data);
                     </p>
                   </div>
                 ) : (
-                  <div className="glass-card rounded-2xl p-8 space-y-6">
+                  <div className="glass-card rounded-2xl p-8 space-y-6 animate-fade-up">
                     {/* Drop zone */}
                     <div
                       onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
@@ -258,18 +271,20 @@ setResult(data);
 
                     <Button
                       onClick={analyze}
-                      disabled={loading || (!text.trim() && !file)}
-                      className="w-full gradient-blue text-primary-foreground border-0 h-12 text-base hover:opacity-90 transition-opacity disabled:opacity-40"
-                    >
-                      {loading ? (
+                        disabled={loading || cooldown > 0 || (!text.trim() && !file)}
+                        className="w-full gradient-blue text-primary-foreground border-0 h-12 text-base hover:opacity-90 transition-opacity disabled:opacity-40"
+                        >
+                        {loading ? (
                         <>
-                          <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                          Analyzing with AI…
+                        <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                        Analyzing with AI…
                         </>
-                      ) : (
-                        `Analyze ${tabConfig[key].label}`
-                      )}
-                    </Button>
+                            ) : cooldown > 0 ? (
+                            `Please wait ${cooldown}s`
+                              ) : (
+                              `Analyze ${tabConfig[key].label}`
+                              )}
+                        </Button>
                   </div>
                 )}
               </TabsContent>
@@ -278,7 +293,7 @@ setResult(data);
 
           {/* Results */}
           {result && (
-            <div className="mt-8 glass-card rounded-2xl p-8 animate-fade-up space-y-6">
+           <div className="mt-8 glass-card rounded-2xl p-8 space-y-6 animate-fade-up" key={result.score}>
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="text-center sm:text-left">
                   <p className="text-sm text-muted-foreground mb-1">Authenticity Score</p>
@@ -294,15 +309,28 @@ setResult(data);
               </div>
 
               <div className="space-y-4">
-                {result.breakdown.map((b) => (
-                  <div key={b.label}>
-                    <div className="flex justify-between text-sm mb-1.5">
-                      <span className="text-muted-foreground">{b.label}</span>
-                      <span className="font-medium text-foreground">{b.value}%</span>
+                {result.breakdown.map((b) => {
+                  const barColor =
+                    b.value <= 40
+                      ? "bg-gradient-to-r from-emerald-400 to-emerald-500"
+                      : b.value <= 70
+                      ? "bg-gradient-to-r from-amber-400 to-amber-500"
+                      : "bg-gradient-to-r from-red-400 to-red-500";
+                  return (
+                    <div key={b.label}>
+                      <div className="flex justify-between text-sm mb-1.5">
+                        <span className="text-muted-foreground">{b.label}</span>
+                        <span className="font-medium text-foreground">{b.value}%</span>
+                      </div>
+                      <div className="relative h-2 w-full overflow-hidden rounded-full bg-secondary">
+                        <div
+                          className={`h-full rounded-full transition-all duration-1000 ease-out ${barColor}`}
+                          style={{ width: `${b.value}%` }}
+                        />
+                      </div>
                     </div>
-                    <Progress value={b.value} className="h-2 bg-secondary" />
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
