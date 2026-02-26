@@ -3,24 +3,32 @@ import { Check, X, Minus } from "lucide-react";
 
 type CellValue = true | false | "partial" | string;
 
-const features: { label: string; deepScan: CellValue; compA: CellValue; compB: CellValue }[] = [
-  { label: "Text/Article Analysis", deepScan: true, compA: true, compB: true },
-  { label: "AI Image Detection", deepScan: true, compA: true, compB: false },
-  { label: "Deepfake Video Scanner", deepScan: true, compA: false, compB: "partial" },
-  { label: "Synthetic Voice Detection", deepScan: true, compA: false, compB: false },
-  { label: "Real-time API", deepScan: true, compA: "partial", compB: true },
-  { label: "Batch Processing", deepScan: true, compA: false, compB: false },
-  { label: "Sub-2s Analysis Speed", deepScan: true, compA: false, compB: false },
-  { label: "99%+ Accuracy", deepScan: true, compA: "partial", compB: false },
-  { label: "On-premise Deployment", deepScan: true, compA: false, compB: false },
-  { label: "Free Tier Available", deepScan: true, compA: true, compB: false },
+const features: {
+  label: string;
+  deepScan: CellValue;
+  compA: CellValue;
+  compB: CellValue;
+}[] = [
+  { label: "AI Text Authenticity Analysis", deepScan: true, compA: true, compB: true },
+  { label: "AI Image Deepfake Detection", deepScan: true, compA: true, compB: false },
+  { label: "Risk Level Classification", deepScan: true, compA: "partial", compB: false },
+  { label: "Basic API Access", deepScan: true, compA: "partial", compB: true },
+  { label: "Free Starter Plan", deepScan: true, compA: true, compB: false },
+  { label: "Video Deepfake Scanner", deepScan: false, compA: false, compB: "partial" },
+  { label: "Synthetic Voice Detection", deepScan: false, compA: false, compB: false },
+  { label: "Batch Processing", deepScan: false, compA: false, compB: false },
+  { label: "On-Premise Deployment", deepScan: false, compA: false, compB: false },
+  { label: "Advanced Fact Verification Engine", deepScan: "coming soon", compA: true, compB: false },
 ];
 
 const CellIcon = ({ value }: { value: CellValue }) => {
-  if (value === true) return <Check className="h-5 w-5 text-emerald-500 mx-auto" />;
-  if (value === false) return <X className="h-5 w-5 text-red-400 mx-auto" />;
-  if (value === "partial") return <Minus className="h-5 w-5 text-amber-500 mx-auto" />;
-  return <span className="text-sm text-muted-foreground">{value}</span>;
+  if (value === true)
+    return <Check className="h-5 w-5 text-emerald-500 mx-auto" />;
+  if (value === false)
+    return <X className="h-5 w-5 text-red-400 mx-auto" />;
+  if (value === "partial")
+    return <Minus className="h-5 w-5 text-amber-500 mx-auto" />;
+  return <span className="text-xs text-muted-foreground">{value}</span>;
 };
 
 const ComparisonSection = () => {
@@ -28,10 +36,16 @@ const ComparisonSection = () => {
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add("animate-fade-up")),
+      (entries) =>
+        entries.forEach(
+          (e) =>
+            e.isIntersecting && e.target.classList.add("animate-fade-up")
+        ),
       { threshold: 0.1 }
     );
-    ref.current?.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+    ref.current
+      ?.querySelectorAll(".reveal")
+      .forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
 
@@ -46,42 +60,68 @@ const ComparisonSection = () => {
             Why Choose <span className="gradient-blue-text">DeepScan AI?</span>
           </h2>
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-            See how we stack up against the competition.
+            Transparent comparison based on currently available features.
           </p>
         </div>
 
         <div className="reveal opacity-0 max-w-4xl mx-auto overflow-x-auto relative">
-          {/* Mobile scroll indicator */}
           <div className="md:hidden text-center mb-3">
-            <span className="text-xs text-muted-foreground">← Scroll to compare →</span>
+            <span className="text-xs text-muted-foreground">
+              ← Scroll to compare →
+            </span>
           </div>
+
           <div className="glass-card rounded-2xl overflow-hidden min-w-[500px]">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border/40">
-                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">Feature</th>
-                  <th className="p-4 text-center">
-                    <span className="font-display font-bold text-primary text-sm">DeepScan AI</span>
+                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">
+                    Feature
                   </th>
                   <th className="p-4 text-center">
-                    <span className="font-display font-bold text-muted-foreground text-sm">Competitor A</span>
+                    <span className="font-display font-bold text-primary text-sm">
+                      DeepScan AI
+                    </span>
                   </th>
                   <th className="p-4 text-center">
-                    <span className="font-display font-bold text-muted-foreground text-sm">Competitor B</span>
+                    <span className="font-display font-bold text-muted-foreground text-sm">
+                      Competitor A
+                    </span>
+                  </th>
+                  <th className="p-4 text-center">
+                    <span className="font-display font-bold text-muted-foreground text-sm">
+                      Competitor B
+                    </span>
                   </th>
                 </tr>
               </thead>
+
               <tbody>
                 {features.map((f, i) => (
-                  <tr key={f.label} className={`${i < features.length - 1 ? "border-b border-border/20" : ""} hover:bg-primary/[0.04] transition-colors duration-300`}>
-                    <td className="p-4 text-sm font-medium text-foreground">{f.label}</td>
+                  <tr
+                    key={f.label}
+                    className={`${
+                      i < features.length - 1
+                        ? "border-b border-border/20"
+                        : ""
+                    } hover:bg-primary/[0.04] transition-colors duration-300`}
+                  >
+                    <td className="p-4 text-sm font-medium text-foreground">
+                      {f.label}
+                    </td>
+
                     <td className="p-4 text-center bg-primary/[0.03] relative">
-                      {/* Subtle glow on DeepScan column */}
                       <div className="absolute inset-0 bg-primary/[0.02] pointer-events-none" />
                       <CellIcon value={f.deepScan} />
                     </td>
-                    <td className="p-4 text-center"><CellIcon value={f.compA} /></td>
-                    <td className="p-4 text-center"><CellIcon value={f.compB} /></td>
+
+                    <td className="p-4 text-center">
+                      <CellIcon value={f.compA} />
+                    </td>
+
+                    <td className="p-4 text-center">
+                      <CellIcon value={f.compB} />
+                    </td>
                   </tr>
                 ))}
               </tbody>
